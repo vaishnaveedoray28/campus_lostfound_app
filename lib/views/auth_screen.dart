@@ -15,7 +15,6 @@ class _AuthScreenState extends State<AuthScreen> {
   bool isLoginMode = true;
   bool isLoading = false;
 
-  // Input text field controllers mapping to the lecturer's backend keys
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();

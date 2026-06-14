@@ -1,4 +1,3 @@
-// lib/main.dart
 import 'package:flutter/material.dart';
 import 'views/splash_screen.dart';
 
@@ -20,7 +19,6 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
           useMaterial3: true,
         ),
-        // Directs the app architecture to launch into the landing view first
         home: const SplashScreen(),
       ),
     );
