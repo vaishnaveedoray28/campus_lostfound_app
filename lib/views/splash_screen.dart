@@ -26,7 +26,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.teal,
+      backgroundColor: const Color.fromARGB(255, 186, 1, 100),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -38,14 +38,14 @@ class _SplashScreenState extends State<SplashScreen> {
                 shape: BoxShape.circle,
               ),
               child: const Icon(
-                Icons.stars_rounded,
+                Icons.find_in_page_rounded,
                 size: 80,
-                color: Colors.teal,
+                color:const Color.fromARGB(255, 186, 1, 100),
               ),
             ),
             const SizedBox(height: 24),
             const Text(
-              "SINTOK REWARDS",
+              "UUM FoundIt",
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
@@ -55,7 +55,7 @@ class _SplashScreenState extends State<SplashScreen> {
             ),
             const SizedBox(height: 8),
             Text(
-              "UUM Lost & Found Hub",
+              "Lost & Found Hub",
               style: TextStyle(
                 fontSize: 16,
                 color: Colors.teal[100],
