@@ -108,8 +108,8 @@ class _AuthScreenState extends State<AuthScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(isLoginMode ? 'UUM Rewards Sign In' : 'Create Student Account'),
-        backgroundColor: Colors.teal,
+        title: Text(isLoginMode ? 'UUM FoundIt' : 'Create Account'),
+        backgroundColor: const Color.fromARGB(255, 186, 1, 100),
         foregroundColor: Colors.white,
         centerTitle: true,
         elevation: 0,
@@ -127,11 +127,11 @@ class _AuthScreenState extends State<AuthScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.stars, size: 65, color: Colors.teal),
+                    const Icon(Icons.stars, size: 65, color: Color.fromARGB(255, 240, 39, 173)),
                     const SizedBox(height: 10),
                     const Text(
-                      "Sintok Lost & Found Hub",
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.teal),
+                      "UUM FoundIt",
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: const Color.fromARGB(255, 186, 1, 100)),
                     ),
                     const SizedBox(height: 25),
                     
@@ -206,7 +206,7 @@ class _AuthScreenState extends State<AuthScreen> {
                         : ElevatedButton(
                             onPressed: _submitAuthForm,
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.teal,
+                              backgroundColor: const Color.fromARGB(255, 186, 1, 100),
                               foregroundColor: Colors.white,
                               minimumSize: const Size(double.infinity, 50),
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
