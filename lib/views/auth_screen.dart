@@ -1,7 +1,9 @@
+// lib/views/auth_screen.dart
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../models/user_model.dart';
+import 'dashboard_screen.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -21,7 +23,6 @@ class _AuthScreenState extends State<AuthScreen> {
   final TextEditingController _passwordController = TextEditingController();
   String _selectedRole = "Student";
 
-  // Android Emulator loopback IP to communicate with local XAMPP Apache
   final String baseApiUrl = "http://10.0.2.2/lost_found_api";
 
   Future<void> _submitAuthForm() async {
@@ -34,7 +35,6 @@ class _AuthScreenState extends State<AuthScreen> {
     final String endpoint = isLoginMode ? 'login.php' : 'register.php';
     final Uri url = Uri.parse('$baseApiUrl/$endpoint');
 
-    // Payloads matching the requirements of your lecturer's PHP scripts
     final Map<String, dynamic> requestBody = isLoginMode
         ? {
             'email': _emailController.text.trim(),
@@ -61,21 +61,17 @@ class _AuthScreenState extends State<AuthScreen> {
         _showSnackBar(responseData['message'] ?? 'Success!', Colors.green);
 
         if (isLoginMode) {
-          // Parse raw JSON object directly into our structured UserModel data object
           UserModel userSession = UserModel.fromJson(responseData['user']);
-          
-          print("Login Session Authorized for: ${userSession.name} with ${userSession.points} pts");
+          print("Login Session Authorized for: ${userSession.name}");
           
           if (!mounted) return;
-          // Cleanly transition to the Main Dashboard View page
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => DashboardScreenPlaceholder(user: userSession),
+              builder: (context) => DashboardScreen(user: userSession),
             ),
           );
         } else {
-          // Switch UI layout smoothly back to Login mode upon registration success
           setState(() {
             isLoginMode = true;
           });
@@ -139,7 +135,6 @@ class _AuthScreenState extends State<AuthScreen> {
                     ),
                     const SizedBox(height: 25),
                     
-                    // Full Name Field (Registration Mode Only)
                     if (!isLoginMode) ...[
                       TextFormField(
                         controller: _nameController,
@@ -153,7 +148,6 @@ class _AuthScreenState extends State<AuthScreen> {
                       const SizedBox(height: 16),
                     ],
 
-                    // Email Field
                     TextFormField(
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
@@ -166,7 +160,6 @@ class _AuthScreenState extends State<AuthScreen> {
                     ),
                     const SizedBox(height: 16),
 
-                    // Phone and Role Fields (Registration Mode Only)
                     if (!isLoginMode) ...[
                       TextFormField(
                         controller: _phoneController,
@@ -196,7 +189,6 @@ class _AuthScreenState extends State<AuthScreen> {
                       const SizedBox(height: 16),
                     ],
 
-                    // Password Field
                     TextFormField(
                       controller: _passwordController,
                       obscureText: true,
@@ -209,7 +201,6 @@ class _AuthScreenState extends State<AuthScreen> {
                     ),
                     const SizedBox(height: 24),
 
-                    // Active Action Button UI Component
                     isLoading
                         ? const CircularProgressIndicator()
                         : ElevatedButton(
@@ -224,7 +215,6 @@ class _AuthScreenState extends State<AuthScreen> {
                           ),
                     const SizedBox(height: 12),
 
-                    // Toggle Button Layout Selector Link
                     TextButton(
                       onPressed: () {
                         setState(() {
@@ -241,22 +231,6 @@ class _AuthScreenState extends State<AuthScreen> {
             ),
           ),
         ),
-      ),
-    );
-  }
-}
-
-// Temporary Placeholder to allow clean project compilation until we build dashboard_screen.dart next
-class DashboardScreenPlaceholder extends StatelessWidget {
-  final UserModel user;
-  const DashboardScreenPlaceholder({super.key, required this.user});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Dashboard Placeholder'), backgroundColor: Colors.teal),
-      body: Center(
-        child: Text('Welcome, ${user.name}!\nPoints Balance: ${user.points} PTS\nAuthentication Successful.'),
       ),
     );
   }
