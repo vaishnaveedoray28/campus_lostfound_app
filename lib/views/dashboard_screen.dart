@@ -1,4 +1,5 @@
-
+import 'lost_form_screen.dart';
+import 'found_feed_screen.dart';
 import 'package:flutter/material.dart';
 import '../models/user_model.dart';
 import 'auth_screen.dart';
@@ -29,7 +30,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text("Incomplete Points! You need at least 100 PTS for a Thailicious voucher."),
+          content: Text(
+            "Incomplete Points! You need at least 100 PTS for a Thailicious voucher.",
+          ),
           backgroundColor: Colors.red,
           behavior: SnackBarBehavior.floating,
         ),
@@ -66,7 +69,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ),
               child: const Text(
                 "THAI-FREE-DRINK-UUM",
-                style: TextStyle(fontFamily: 'monospace', fontWeight: FontWeight.bold, fontSize: 16, letterSpacing: 1.5),
+                style: TextStyle(
+                  fontFamily: 'monospace',
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                  letterSpacing: 1.5,
+                ),
               ),
             ),
           ],
@@ -75,7 +83,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: const Text("Awesome", style: TextStyle(color: Colors.teal)),
-          )
+          ),
         ],
       ),
     );
@@ -99,20 +107,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 MaterialPageRoute(builder: (context) => const AuthScreen()),
               );
             },
-          )
+          ),
         ],
       ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            
             Container(
-              color:const Color.fromARGB(255, 186, 1, 100),
+              color: const Color.fromARGB(255, 186, 1, 100),
               padding: const EdgeInsets.only(bottom: 30, left: 20, right: 20),
               child: Card(
                 elevation: 4,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
                 child: Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: Row(
@@ -124,14 +133,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           children: [
                             Text(
                               'Welcome, ${widget.user.name}!',
-                              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
                             const SizedBox(height: 4),
                             Text(
                               'Role: ${widget.user.role} | ${widget.user.email}',
-                              style: TextStyle(color: Colors.grey[600], fontSize: 12),
+                              style: TextStyle(
+                                color: Colors.grey[600],
+                                fontSize: 12,
+                              ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -140,7 +155,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ),
                       const SizedBox(width: 10),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 8,
+                        ),
                         decoration: BoxDecoration(
                           color: Colors.amber[50],
                           borderRadius: BorderRadius.circular(12),
@@ -149,20 +167,28 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(Icons.emoji_events, color: Colors.amber, size: 28),
+                            const Icon(
+                              Icons.emoji_events,
+                              color: Colors.amber,
+                              size: 28,
+                            ),
                             Text(
                               '$currentPoints PTS',
-                              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.teal),
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.teal,
+                              ),
                             ),
                           ],
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
               ),
             ),
-            
+
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: Column(
@@ -170,7 +196,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 children: [
                   const Text(
                     "Campus Quick Actions",
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87),
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
                   ),
                   const SizedBox(height: 12),
 
@@ -179,28 +209,43 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       Expanded(
                         child: InkWell(
                           onTap: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Opening Lost Item Form...')),
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    LostFormScreen(user: widget.user),
+                              ),
                             );
                           },
                           child: Card(
                             color: Colors.red[50],
                             elevation: 2,
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15), 
-                              side: BorderSide(color: Colors.red[200]!, width: 1)
+                              borderRadius: BorderRadius.circular(15),
+                              side: BorderSide(
+                                color: Colors.red[200]!,
+                                width: 1,
+                              ),
                             ),
                             child: const Padding(
                               padding: EdgeInsets.symmetric(vertical: 24.0),
                               child: Column(
                                 children: [
-                                  Icon(Icons.assignment_late_outlined, size: 45, color: Colors.red),
+                                  Icon(
+                                    Icons.assignment_late_outlined,
+                                    size: 45,
+                                    color: Colors.red,
+                                  ),
                                   SizedBox(height: 12),
                                   Text(
                                     "I Lost Something",
                                     textAlign: TextAlign.center,
-                                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.red),
-                                  )
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.red,
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
@@ -211,28 +256,43 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       Expanded(
                         child: InkWell(
                           onTap: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Opening Found items Feed Board...')),
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    FoundFeedScreen(user: widget.user),
+                              ),
                             );
                           },
                           child: Card(
                             color: Colors.green[50],
                             elevation: 2,
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15), 
-                              side: BorderSide(color: Colors.green[200]!, width: 1)
+                              borderRadius: BorderRadius.circular(15),
+                              side: BorderSide(
+                                color: Colors.green[200]!,
+                                width: 1,
+                              ),
                             ),
                             child: const Padding(
                               padding: EdgeInsets.symmetric(vertical: 24.0),
                               child: Column(
                                 children: [
-                                  Icon(Icons.gpp_good_outlined, size: 45, color: Colors.green),
+                                  Icon(
+                                    Icons.gpp_good_outlined,
+                                    size: 45,
+                                    color: Colors.green,
+                                  ),
                                   SizedBox(height: 12),
                                   Text(
                                     "I Found Something",
                                     textAlign: TextAlign.center,
-                                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.green),
-                                  )
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.green,
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
@@ -245,12 +305,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
                   const Text(
                     "Sintok Active Feed Summary",
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87),
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
                   ),
                   const SizedBox(height: 12),
                   Card(
                     elevation: 1,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Column(
@@ -259,23 +325,44 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             children: [
                               Icon(Icons.info_outline, color: Colors.teal[300]),
                               const SizedBox(width: 10),
-                              const Text("Live System Tracking Info", style: TextStyle(fontWeight: FontWeight.bold)),
+                              const Text(
+                                "Live System Tracking Info",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
                             ],
                           ),
                           const Divider(height: 20),
                           const Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text("Active Unresolved Claims:", style: TextStyle(color: Colors.black54)),
-                              Text("2 Items Pending", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.orange)),
+                              Text(
+                                "Active Unresolved Claims:",
+                                style: TextStyle(color: Colors.black54),
+                              ),
+                              Text(
+                                "2 Items Pending",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.orange,
+                                ),
+                              ),
                             ],
                           ),
                           const SizedBox(height: 8),
                           const Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text("Your Successful Returns:", style: TextStyle(color: Colors.black54)),
-                              Text("0 Items Closed", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.teal)),
+                              Text(
+                                "Your Successful Returns:",
+                                style: TextStyle(color: Colors.black54),
+                              ),
+                              Text(
+                                "0 Items Closed",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.teal,
+                                ),
+                              ),
                             ],
                           ),
                         ],
@@ -287,12 +374,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ElevatedButton.icon(
                     onPressed: _simulateRedemption,
                     icon: const Icon(Icons.local_cafe_rounded),
-                    label: const Text("Redeem Thailicious Voucher (Costs 100 PTS)", style: TextStyle(fontWeight: FontWeight.bold)),
+                    label: const Text(
+                      "Redeem Thailicious Voucher (Costs 100 PTS)",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color.fromARGB(255, 186, 1, 100),
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
                       elevation: 2,
                     ),
                   ),
