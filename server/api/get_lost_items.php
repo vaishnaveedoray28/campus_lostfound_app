@@ -1,7 +1,6 @@
 <?php
 header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type");
 header("Content-Type: application/json; charset=UTF-8");
 
 require_once "db.php";
@@ -21,14 +20,8 @@ try {
     $stmt->execute();
     $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    echo json_encode([
-        "status" => "success",
-        "items" => $items
-    ]);
+    echo json_encode(["status" => "success", "items" => $items]);
 } catch (PDOException $e) {
-    echo json_encode([
-        "status" => "error",
-        "message" => "Feed query failed: " . $e->getMessage()
-    ]);
+    echo json_encode(["status" => "error", "message" => "Fetch failed: " . $e->getMessage()]);
 }
 ?>

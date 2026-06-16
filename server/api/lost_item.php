@@ -14,13 +14,17 @@ require_once "db.php";
 $rawData = file_get_contents("php://input");
 $data = json_decode($rawData, true);
 
-$reporter_id = isset($data['reporter_id']) ? intval($data['reporter_id']) : 1; // Default fallback to 1 if empty
-$item_name   = isset($data['item_name']) ? trim($data['item_name']) : '';
-$description = isset($data['description']) ? trim($data['description']) : '';
-$color       = isset($data['color']) ? trim($data['color']) : '';
-$date_lost   = isset($data['date_lost']) ? trim($data['date_lost']) : '';
-$place       = isset($data['place']) ? trim($data['place']) : '';
-$image_path  = isset($data['image_path']) ? trim($data['image_path']) : '';
+$reporter_id = $data['reporter_id'] ?? $data['reporterId'] ?? 0;
+$item_name   = trim($data['item_name'] ?? $data['itemName'] ?? '');
+$description = trim($data['description'] ?? '');
+$color       = trim($data['color'] ?? '');
+$date_lost   = trim($data['date_lost'] ?? $data['dateLost'] ?? '');
+$place       = trim($data['place'] ?? '');
+$image_path  = trim($data['image_path'] ?? $data['imagePath'] ?? '');
+
+if (empty($reporter_id) || $reporter_id == 0) {
+    $reporter_id = 3; 
+}
 
 try {
     $query = "INSERT INTO items (reporter_id, item_name, description, color, date_lost, place, image_path, status) 
@@ -29,8 +33,15 @@ try {
     $stmt = $db->prepare($query);
     $stmt->execute([$reporter_id, $item_name, $description, $color, $date_lost, $place, $image_path]);
 
-    echo json_encode(["status" => "success", "message" => "Saved successfully!"]);
+    echo json_encode([
+        "status" => "success", 
+        "message" => "Item completely written to database!"
+    ]);
 } catch (PDOException $e) {
-    echo json_encode(["status" => "error", "message" => $e->getMessage()]);
+    http_response_code(500);
+    echo json_encode([
+        "status" => "error", 
+        "message" => "Database injection rejected: " . $e->getMessage()
+    ]);
 }
 ?>
