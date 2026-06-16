@@ -86,7 +86,7 @@ class _AuthScreenState extends State<AuthScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(isLoginMode ? 'UUM Rewards Sign In' : 'Create Student Account'), backgroundColor: Colors.teal, foregroundColor: Colors.white, centerTitle: true, elevation: 0),
+      appBar: AppBar(title: Text(isLoginMode ? 'UUM Rewards Sign In' : 'Create Student Account'), backgroundColor: const Color(0xFF1E3A8A), foregroundColor: Colors.white, centerTitle: true, elevation: 0),
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24.0),
@@ -100,9 +100,9 @@ class _AuthScreenState extends State<AuthScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.stars, size: 65, color: Colors.teal),
+                    const Icon(Icons.find_in_page_rounded, size: 65, color: Color(0xFF1E3A8A)),
                     const SizedBox(height: 10),
-                    const Text("Sintok Lost & Found Hub", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.teal)),
+                    const Text("Sintok Lost & Found Hub", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF1E3A8A))),
                     const SizedBox(height: 25),
                     
                     if (!isLoginMode) ...[
@@ -155,16 +155,17 @@ class _AuthScreenState extends State<AuthScreen> {
                     const SizedBox(height: 24),
 
                     isLoading
-                        ? const CircularProgressIndicator()
+                        ? const CircularProgressIndicator(color: Color(0xFF1E3A8A))
                         : ElevatedButton(
                             onPressed: _submitAuthForm,
-                            style: ElevatedButton.styleFrom(backgroundColor: Colors.teal, foregroundColor: Colors.white, minimumSize: const Size(double.infinity, 50), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
+                            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF1E3A8A), foregroundColor: Colors.white, minimumSize: const Size(double.infinity, 50), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
                             child: Text(isLoginMode ? 'Login' : 'Register Account'),
                           ),
                     const SizedBox(height: 12),
 
                     TextButton(
                       onPressed: () { setState(() { isLoginMode = !isLoginMode; }); },
+                      style: TextButton.styleFrom(foregroundColor: const Color(0xFF2563EB)),
                       child: Text(isLoginMode ? 'New to the app? Register here' : 'Already registered? Log in here'),
                     ),
                   ],
