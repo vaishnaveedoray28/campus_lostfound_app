@@ -26,7 +26,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 186, 1, 100),
+      backgroundColor: const Color(0xFF0F172A), // Tailored Dark Navy Slate
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -40,7 +40,7 @@ class _SplashScreenState extends State<SplashScreen> {
               child: const Icon(
                 Icons.find_in_page_rounded,
                 size: 80,
-                color:const Color.fromARGB(255, 186, 1, 100),
+                color: Color(0xFF1E3A8A),
               ),
             ),
             const SizedBox(height: 24),
@@ -58,7 +58,7 @@ class _SplashScreenState extends State<SplashScreen> {
               "Lost & Found Hub",
               style: TextStyle(
                 fontSize: 16,
-                color: Colors.teal[100],
+                color: Colors.blue[100],
                 fontStyle: FontStyle.italic,
               ),
             ),

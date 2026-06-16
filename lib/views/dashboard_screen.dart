@@ -50,7 +50,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         title: const Row(
           children: [
-            Icon(Icons.card_giftcard_rounded, color: Colors.teal, size: 28),
+            Icon(Icons.card_giftcard_rounded, color: Color(0xFF1E3A8A), size: 28),
             SizedBox(width: 12),
             Text("Redeem Campus Rewards", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
           ],
@@ -61,7 +61,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           children: [
             Text(
               "Your Balance: $userPoints Points",
-              style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.teal, fontSize: 15),
+              style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF1E3A8A), fontSize: 15),
             ),
             const SizedBox(height: 12),
             const Text(
@@ -121,7 +121,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             ),
                             child: const Text(
                               "VOUCHER CODE: UUM-REWARD-50",
-                              style: TextStyle(fontFamily: 'Courier', fontWeight: FontWeight.bold, fontSize: 14, color: Colors.teal),
+                              style: TextStyle(fontFamily: 'Courier', fontWeight: FontWeight.bold, fontSize: 14, color: Color(0xFF1E3A8A)),
                             ),
                           )
                         ],
@@ -136,7 +136,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))
                             ),
                             onPressed: () {
-                              
                               Navigator.pop(innerContext);
                               
                               setState(() {
@@ -146,7 +145,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text("50 Points deducted. Remaining Balance: $userPoints Pts"),
-                                  backgroundColor: Colors.teal,
+                                  backgroundColor: const Color(0xFF1E3A8A),
                                 ),
                               );
                             },
@@ -176,10 +175,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: const Color(0xFFF1F5F9),
       appBar: AppBar(
         title: const Text('Sintok Lost & Found Hub', style: TextStyle(fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.teal,
+        backgroundColor: const Color(0xFF1E3A8A),
         foregroundColor: Colors.white,
         elevation: 0,
         actions: [
@@ -211,7 +210,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                gradient: const LinearGradient(colors: [Color(0xFF0F766E), Color(0xFF14B8A6)]),
+                gradient: const LinearGradient(colors: [Color(0xFF1E3A8A), Color(0xFF3B82F6)]),
                 borderRadius: BorderRadius.circular(24),
                 boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3))],
               ),
@@ -231,7 +230,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           children: [
                             Text(
                               "Welcome back, 👋", 
-                              style: TextStyle(color: Colors.teal[100], fontSize: 12, fontWeight: FontWeight.w500)
+                              style: TextStyle(color: Colors.blue[100], fontSize: 12, fontWeight: FontWeight.w500)
                             ),
                             Text(
                               widget.user.name, 
@@ -262,7 +261,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         label: const Text("Redeem Rewards", style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white,
-                          foregroundColor: Colors.teal[800],
+                          foregroundColor: const Color(0xFF1E3A8A),
                           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                           elevation: 0,
@@ -351,7 +350,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             const SizedBox(height: 12),
 
             isListLoading
-                ? const Center(child: CircularProgressIndicator(color: Colors.teal))
+                ? const Center(child: CircularProgressIndicator(color: Color(0xFF1E3A8A)))
                 : myReports.isEmpty
                     ? Container(
                         width: double.infinity,

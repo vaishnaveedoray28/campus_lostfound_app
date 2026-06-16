@@ -49,7 +49,7 @@ class _LostFormScreenState extends State<LostFormScreen> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         title: const Row(
           children: [
-            Icon(Icons.check_circle_rounded, color: Colors.teal, size: 28),
+            Icon(Icons.check_circle_rounded, color: Color(0xFF1E3A8A), size: 28),
             SizedBox(width: 12),
             Text("Report Posted!", style: TextStyle(fontWeight: FontWeight.bold)),
           ],
@@ -65,7 +65,7 @@ class _LostFormScreenState extends State<LostFormScreen> {
             const SizedBox(height: 14),
             const Text(
               "Your lost item will be get soon, don't worry!",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.teal),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Color(0xFF1E3A8A)),
             ),
           ],
         ),
@@ -76,7 +76,7 @@ class _LostFormScreenState extends State<LostFormScreen> {
               Navigator.pop(context); 
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.teal,
+              backgroundColor: const Color(0xFF1E3A8A),
               foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             ),
@@ -127,7 +127,7 @@ class _LostFormScreenState extends State<LostFormScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
-      appBar: AppBar(title: const Text('Report a Lost Item'), backgroundColor: Colors.teal, foregroundColor: Colors.white, elevation: 0),
+      appBar: AppBar(title: const Text('Report a Lost Item'), backgroundColor: const Color(0xFF1E3A8A), foregroundColor: Colors.white, elevation: 0),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24.0),
         child: Form(
@@ -135,7 +135,7 @@ class _LostFormScreenState extends State<LostFormScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Text("Enter Object Properties", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.teal)),
+              const Text("Enter Object Properties", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF1E3A8A))),
               const SizedBox(height: 18),
               TextFormField(
                 controller: _nameController,
@@ -169,19 +169,20 @@ class _LostFormScreenState extends State<LostFormScreen> {
               const SizedBox(height: 24),
               OutlinedButton.icon(
                 onPressed: _pickImageFromGallery,
-                icon: const Icon(Icons.photo_library_outlined, color: Colors.teal),
+                icon: const Icon(Icons.photo_library_outlined, color: Color(0xFF1E3A8A)),
                 label: Text(_selectedImageName.isEmpty ? "Select Picture from Gallery" : "Attached: $_selectedImageName"),
                 style: OutlinedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16), 
-                  side: const BorderSide(color: Colors.teal, width: 1.2),
+                  foregroundColor: const Color(0xFF1E3A8A),
+                  side: const BorderSide(color: Color(0xFF1E3A8A), width: 1.2),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 ),
               ),
               const SizedBox(height: 35),
               isLoading
-                  ? const Center(child: CircularProgressIndicator(color: Colors.teal))
+                  ? const Center(child: CircularProgressIndicator(color: Color(0xFF1E3A8A)))
                   : Container(
-                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), gradient: const LinearGradient(colors: [Color(0xFF0F766E), Color(0xFF14B8A6)])),
+                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), gradient: const LinearGradient(colors: [Color(0xFF1E3A8A), Color(0xFF3B82F6)])),
                       child: ElevatedButton(
                         onPressed: _submitLostReport,
                         style: ElevatedButton.styleFrom(backgroundColor: Colors.transparent, shadowColor: Colors.transparent, foregroundColor: Colors.white, padding: const EdgeInsets.symmetric(vertical: 16), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),

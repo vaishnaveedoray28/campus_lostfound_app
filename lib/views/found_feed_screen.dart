@@ -75,7 +75,7 @@ class _FoundFeedScreenState extends State<FoundFeedScreen> {
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.teal, 
+              backgroundColor: const Color(0xFF1E3A8A), 
               foregroundColor: Colors.white
             ),
             onPressed: () async {
@@ -87,7 +87,7 @@ class _FoundFeedScreenState extends State<FoundFeedScreen> {
                   headers: {"Content-Type": "application/json"},
                   body: jsonEncode({
                     "item_id": item['id'], 
-                    "finder_id": widget.user.id, // Sends current helper's user account ID
+                    "finder_id": widget.user.id, 
                     "finder_phone": phoneController.text.trim()
                   }),
                 );
@@ -100,7 +100,7 @@ class _FoundFeedScreenState extends State<FoundFeedScreen> {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(responseData['message'] ?? "Claim submitted successfully!"), 
-                      backgroundColor: Colors.teal
+                      backgroundColor: const Color(0xFF1E3A8A)
                     ),
                   );
                 }
@@ -121,13 +121,13 @@ class _FoundFeedScreenState extends State<FoundFeedScreen> {
       backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
         title: const Text('Campus Claims Feed', style: TextStyle(fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.teal,
+        backgroundColor: const Color(0xFF1E3A8A),
         foregroundColor: Colors.white,
         elevation: 0,
         actions: [IconButton(icon: const Icon(Icons.refresh), onPressed: _fetchLostItems)],
       ),
       body: isLoading
-          ? const Center(child: CircularProgressIndicator(color: Colors.teal))
+          ? const Center(child: CircularProgressIndicator(color: Color(0xFF1E3A8A)))
           : lostItems.isEmpty
               ? const Center(child: Text("🎉 Excellent! No lost items currently pending.", style: TextStyle(color: Colors.grey, fontSize: 15)))
               : ListView.builder(
@@ -158,9 +158,9 @@ class _FoundFeedScreenState extends State<FoundFeedScreen> {
                                 ],
                               ),
                               const Divider(height: 20),
-                              Row(children: [const Icon(Icons.location_on, size: 16, color: Colors.teal), const SizedBox(width: 6), Text("Place: ${item['place'] ?? 'N/A'}", style: const TextStyle(fontSize: 13))]),
+                              Row(children: [const Icon(Icons.location_on, size: 16, color: Color(0xFF1E3A8A)), const SizedBox(width: 6), Text("Place: ${item['place'] ?? 'N/A'}", style: const TextStyle(fontSize: 13))]),
                               const SizedBox(height: 6),
-                              Row(children: [const Icon(Icons.access_time_filled, size: 16, color: Colors.teal), const SizedBox(width: 6), Text("Time: ${item['date_lost'] ?? 'N/A'}", style: const TextStyle(fontSize: 13))]),
+                              Row(children: [const Icon(Icons.access_time_filled, size: 16, color: Color(0xFF1E3A8A)), const SizedBox(width: 6), Text("Time: ${item['date_lost'] ?? 'N/A'}", style: const TextStyle(fontSize: 13))]),
                               const SizedBox(height: 8),
                               Text("Description: ${item['description'] ?? ''}", style: const TextStyle(color: Colors.black54, fontSize: 13)),
                               const Divider(height: 24),
