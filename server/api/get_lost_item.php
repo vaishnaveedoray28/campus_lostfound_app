@@ -1,5 +1,4 @@
 <?php
-// C:\xampp\htdocs\lost_found_api\get_lost_items.php
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
@@ -8,7 +7,6 @@ header("Content-Type: application/json; charset=UTF-8");
 require_once "db.php";
 
 try {
-    // Left Join guarantees the item displays even if reporter account metadata links are loose
     $query = "SELECT items.*, 
                      IFNULL(users.name, 'Campus User') as reporter_name, 
                      IFNULL(users.phone, 'No Phone') as reporter_phone, 

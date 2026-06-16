@@ -1,5 +1,4 @@
 <?php
-// setup.php
 header("Content-Type: application/json; charset=UTF-8");
 date_default_timezone_set('Asia/Kuala_Lumpur');
 
@@ -9,7 +8,6 @@ try {
     $db->exec("DROP TABLE IF EXISTS items;");
     $db->exec("DROP TABLE IF EXISTS users;");
 
-    // Added matric_no and inasis columns
     $createUsersTable = "
         CREATE TABLE users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -28,7 +26,6 @@ try {
     ";
     $db->exec($createUsersTable);
 
-    // Added color and image_path columns
     $createItemsTable = "
         CREATE TABLE items (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -51,7 +48,6 @@ try {
     $hashedPassword = password_hash("password123", PASSWORD_DEFAULT);
     $timestamp = date('Y-m-d H:i:s');
 
-    // Preseed sample users with matric numbers and inasis locations
     $insertUser = $db->prepare("
         INSERT INTO users (name, email, matric_no, inasis, phone, password, role, created_at, is_verified, points) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, ?)
