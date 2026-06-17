@@ -27,8 +27,9 @@ if (empty($reporter_id) || $reporter_id == 0) {
 }
 
 try {
+    // We set status to 'Missing' so it perfectly matches your frontend feed expectations
     $query = "INSERT INTO items (reporter_id, item_name, description, color, date_lost, place, image_path, status) 
-              VALUES (?, ?, ?, ?, ?, ?, ?, 'Lost')";
+              VALUES (?, ?, ?, ?, ?, ?, ?, 'Missing')";
     
     $stmt = $db->prepare($query);
     $stmt->execute([$reporter_id, $item_name, $description, $color, $date_lost, $place, $image_path]);
