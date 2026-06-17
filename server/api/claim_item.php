@@ -1,4 +1,5 @@
 <?php
+
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 header("Access-Control-Allow-Methods: POST, OPTIONS");
@@ -26,14 +27,16 @@ if ($item_id === 0 || $finder_id === 0 || empty($finder_phone)) {
 try {
     $db->beginTransaction();
 
-$queryItem = "UPDATE items 
+    // 1. Update the item's state, tracking id, and clean phone number destination column
+    $queryItem = "UPDATE items 
                   SET status = 'Found', 
                       finder_id = ?, 
-                      color = 'Finder Phone: ' || ?
+                      finder_phone = ?
                   WHERE id = ?";
     $stmtItem = $db->prepare($queryItem);
     $stmtItem->execute([$finder_id, $finder_phone, $item_id]);
 
+    // 2. Add 10 points permanently to the helper's account table row balance
     $queryPoints = "UPDATE users 
                     SET points = points + 10 
                     WHERE id = ?";

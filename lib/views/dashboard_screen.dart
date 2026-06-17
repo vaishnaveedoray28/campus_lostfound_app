@@ -422,7 +422,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                         const SizedBox(width: 6),
                                         Expanded(
                                           child: Text(
-                                            "Contact Finder to retrieve: ${report['color']?.toString().replaceAll('Finder Phone: ', '') ?? 'No Number Provided'}",
+                                            "Contact Finder to retrieve: ${report['finder_phone'] ?? 'No Number Provided'}",
                                             style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.green, fontSize: 13),
                                           ),
                                         ),
