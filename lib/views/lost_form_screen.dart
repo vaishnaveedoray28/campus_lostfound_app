@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:image_picker/image_picker.dart';
 import '../models/user_model.dart';
 
 class LostFormScreen extends StatefulWidget {
@@ -21,25 +20,8 @@ class _LostFormScreenState extends State<LostFormScreen> {
   final TextEditingController _colorController = TextEditingController();
   final TextEditingController _timeController = TextEditingController();
   final TextEditingController _placeController = TextEditingController();
-  String _selectedImageName = "";
 
   final String baseApiUrl = "http://10.0.2.2/lost_found_api/lost_item.php";
-
-  Future<void> _pickImageFromGallery() async {
-    final ImagePicker picker = ImagePicker();
-    try {
-      final XFile? image = await picker.pickImage(source: ImageSource.gallery);
-      if (image != null) {
-        setState(() {
-          _selectedImageName = image.name;
-        });
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Gallery access restricted."), backgroundColor: Colors.redAccent, behavior: SnackBarBehavior.floating),
-      );
-    }
-  }
 
   void _showSuccessDialog(String itemName) {
     showDialog(
@@ -99,7 +81,6 @@ class _LostFormScreenState extends State<LostFormScreen> {
       'color': _colorController.text.trim(),
       'date_lost': _timeController.text.trim(),
       'place': _placeController.text.trim(),
-      'image_path': _selectedImageName,
     };
 
     try {
@@ -165,18 +146,6 @@ class _LostFormScreenState extends State<LostFormScreen> {
                 maxLines: 3,
                 decoration: const InputDecoration(labelText: 'Description Details *', border: OutlineInputBorder()),
                 validator: (val) => (val == null || val.trim().isEmpty) ? 'Description context required' : null,
-              ),
-              const SizedBox(height: 24),
-              OutlinedButton.icon(
-                onPressed: _pickImageFromGallery,
-                icon: const Icon(Icons.photo_library_outlined, color: Color(0xFF1E3A8A)),
-                label: Text(_selectedImageName.isEmpty ? "Select Picture from Gallery" : "Attached: $_selectedImageName"),
-                style: OutlinedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16), 
-                  foregroundColor: const Color(0xFF1E3A8A),
-                  side: const BorderSide(color: Color(0xFF1E3A8A), width: 1.2),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                ),
               ),
               const SizedBox(height: 35),
               isLoading

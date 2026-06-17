@@ -10,7 +10,7 @@ $data = json_decode(file_get_contents("php://input"), true);
 
 if (
     empty($data["name"]) || empty($data["email"]) || empty($data["matric_no"]) ||
-    empty($data["inasis"]) || empty($data["phone"]) || empty($data["password"]) || empty($data["role"])
+    empty($data["inasis"]) || empty($data["phone"]) || empty($data["password"])
 ) {
     echo json_encode(["status" => "error", "message" => "All fields are required"]);
     exit;
@@ -22,7 +22,7 @@ $matric_no = trim($data["matric_no"]);
 $inasis = trim($data["inasis"]);
 $phone = trim($data["phone"]);
 $password = $data["password"];
-$role = trim($data["role"]);
+//$role = trim($data["role"]);
 
 $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 $createdAt = date('Y-m-d H:i:s');
@@ -31,11 +31,11 @@ try {
     $db->beginTransaction();
 
     $insert = $db->prepare("
-        INSERT INTO users (name, email, matric_no, inasis, phone, password, role, created_at, is_verified, points)
+        INSERT INTO users (name, email, matric_no, inasis, phone, password, created_at, is_verified, points)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, 0)
     ");
 
-    $insert->execute([$name, $email, $matric_no, $inasis, $phone, $hashedPassword, $role, $createdAt]);
+    $insert->execute([$name, $email, $matric_no, $inasis, $phone, $hashedPassword, $createdAt]);
     $db->commit();
 
     echo json_encode(["status" => "success", "message" => "Account created successfully!"]);

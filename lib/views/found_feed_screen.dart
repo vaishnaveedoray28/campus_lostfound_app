@@ -42,74 +42,47 @@ class _FoundFeedScreenState extends State<FoundFeedScreen> {
   }
 
   void _openClaimDialog(dynamic item) {
-    final TextEditingController phoneController = TextEditingController();
-
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: Text("I Found this ${item['item_name']}"),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              "Enter your contact number so the owner can reach out to retrieve it:", 
-              style: TextStyle(fontSize: 13, color: Colors.black54)
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: phoneController,
-              keyboardType: TextInputType.phone,
-              decoration: const InputDecoration(
-                labelText: "Your Phone Number", 
-                border: OutlineInputBorder()
-              ),
-            ),
-          ],
+        title: Text("Claim ${item['item_name']}"),
+        content: const Text(
+          "Are you sure you found this item? Tapping confirm will instantly link your account and share your registered phone number with the owner so they can reach out to you.",
+          style: TextStyle(fontSize: 14, color: Colors.black54),
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context), 
-            child: const Text("Cancel", style: TextStyle(color: Colors.grey))
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Cancel", style: TextStyle(color: Colors.grey)),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF1E3A8A), 
-              foregroundColor: Colors.white
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             ),
             onPressed: () async {
-              if (phoneController.text.trim().isEmpty) return;
-              
               try {
                 final res = await http.post(
                   Uri.parse(claimUrl),
                   headers: {"Content-Type": "application/json"},
                   body: jsonEncode({
-                    "item_id": item['id'], 
-                    "finder_id": widget.user.id, 
-                    "finder_phone": phoneController.text.trim()
+                    "item_id": item['id'],
+                    "finder_id": widget.user.id,
+                    "finder_phone": widget.user.phone, // Automatically pulls from registration
                   }),
                 );
-                
-                final responseData = jsonDecode(res.body);
-                
                 if (mounted) {
                   Navigator.pop(context);
-                  _fetchLostItems();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(responseData['message'] ?? "Claim submitted successfully!"), 
-                      backgroundColor: const Color(0xFF1E3A8A)
-                    ),
-                  );
+                  _fetchLostItems(); // Instantly refresh layout feed
                 }
               } catch (e) {
                 if (mounted) Navigator.pop(context);
               }
             },
-            child: const Text("Submit"),
-          )
+            child: const Text("Confirm"),
+          ),
         ],
       ),
     );
@@ -120,57 +93,35 @@ class _FoundFeedScreenState extends State<FoundFeedScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
-        title: const Text('Campus Claims Feed', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text('Campus Claims Feed'),
         backgroundColor: const Color(0xFF1E3A8A),
         foregroundColor: Colors.white,
-        elevation: 0,
         actions: [IconButton(icon: const Icon(Icons.refresh), onPressed: _fetchLostItems)],
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator(color: Color(0xFF1E3A8A)))
           : lostItems.isEmpty
-              ? const Center(child: Text("🎉 Excellent! No lost items currently pending.", style: TextStyle(color: Colors.grey, fontSize: 15)))
+              ? const Center(child: Text("No lost items currently pending.", style: TextStyle(color: Colors.grey)))
               : ListView.builder(
                   padding: const EdgeInsets.all(16),
                   itemCount: lostItems.length,
                   itemBuilder: (context, index) {
                     final item = lostItems[index];
-                    return InkWell(
-                      onTap: () => _openClaimDialog(item),
-                      child: Card(
-                        margin: const EdgeInsets.only(bottom: 16),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20), side: BorderSide(color: Colors.grey[200]!)),
-                        elevation: 3,
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(item['item_name'] ?? 'Unknown Item', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF1E293B))),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                                    decoration: BoxDecoration(color: Colors.red[50], borderRadius: BorderRadius.circular(8)),
-                                    child: const Text("LOST", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold, fontSize: 11)),
-                                  )
-                                ],
-                              ),
-                              const Divider(height: 20),
-                              Row(children: [const Icon(Icons.location_on, size: 16, color: Color(0xFF1E3A8A)), const SizedBox(width: 6), Text("Place: ${item['place'] ?? 'N/A'}", style: const TextStyle(fontSize: 13))]),
-                              const SizedBox(height: 6),
-                              Row(children: [const Icon(Icons.access_time_filled, size: 16, color: Color(0xFF1E3A8A)), const SizedBox(width: 6), Text("Time: ${item['date_lost'] ?? 'N/A'}", style: const TextStyle(fontSize: 13))]),
-                              const SizedBox(height: 8),
-                              Text("Description: ${item['description'] ?? ''}", style: const TextStyle(color: Colors.black54, fontSize: 13)),
-                              const Divider(height: 24),
-                              const Text("REPORTER:", style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.black38)),
-                              Text("👤 Name: ${item['reporter_name'] ?? 'N/A'}", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
-                              Text("🆔 Matric: ${item['reporter_matric'] ?? 'N/A'}", style: const TextStyle(fontSize: 13)),
-                              const SizedBox(height: 8),
-                              const Text("💡 Tap this card if you found this item to submit your number!", style: TextStyle(fontSize: 11, color: Colors.orange, fontWeight: FontWeight.bold)),
-                            ],
-                          ),
+                    return Card(
+                      margin: const EdgeInsets.only(bottom: 16),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                      child: ListTile(
+                        onTap: () => _openClaimDialog(item),
+                        title: Text(item['item_name'] ?? '', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(height: 4),
+                            Text("📍 Place: ${item['place'] ?? ''}"),
+                            Text("⏰ Time: ${item['date_lost'] ?? ''}"),
+                            Text("📝 Desc: ${item['description'] ?? ''}"),
+                            Text("👤 Reporter: ${item['reporter_name'] ?? ''} (${item['reporter_matric'] ?? ''})"),
+                          ],
                         ),
                       ),
                     );
