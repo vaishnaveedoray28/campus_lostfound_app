@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:math';
 import '../models/user_model.dart';
+import 'auth_screen.dart'; 
 import 'lost_form_screen.dart';
 import 'found_feed_screen.dart';
 
@@ -20,7 +21,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   List<dynamic> myReports = [];
 
   final String getOwnerUpdatesUrl = "http://10.0.2.2/lost_found_api/get_owner_updates.php";
-  final String getProfileUrl = "http://10.0.2.2/lost_found_api/login.php"; 
+  final String deleteItemUrl = "http://10.0.2.2/lost_found_api/delete_item.php";
 
   @override
   void initState() {
@@ -32,40 +33,54 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Future<void> _refreshDashboardData() async {
     setState(() { isLoading = true; });
     try {
-      // 1. Fetch updated list of items reported by this user
+      // Fetch updated list of items and fresh points from the database in one single background action
       final response = await http.get(Uri.parse("$getOwnerUpdatesUrl?reporter_id=${widget.user.id}"));
       final responseData = jsonDecode(response.body);
 
       List<dynamic> fetchedReports = [];
+      int updatedPoints = currentPoints;
+
       if (response.statusCode == 200 && responseData['status'] == 'success') {
         fetchedReports = responseData['updates'] ?? [];
-      }
-
-      // 2. Refresh points locally from the database backend
-      final profileResponse = await http.post(
-        Uri.parse(getProfileUrl),
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode({
-          "email": widget.user.email,
-          "password": "" 
-        }),
-      );
-      
-      final profileData = jsonDecode(profileResponse.body);
-      if (profileResponse.statusCode == 200 && profileData['status'] == 'success') {
-        if (profileData['user'] != null && profileData['user']['points'] != null) {
-          currentPoints = profileData['user']['points'] is String 
-              ? int.parse(profileData['user']['points']) 
-              : profileData['user']['points'];
+        
+        // Safely extract the fresh points parsed from the users table by your updated PHP script
+        if (responseData['current_points'] != null) {
+          updatedPoints = responseData['current_points'] is String
+              ? int.parse(responseData['current_points'])
+              : responseData['current_points'];
         }
       }
 
       setState(() {
         myReports = fetchedReports;
+        currentPoints = updatedPoints; // Instantly updates your point counter card on the screen UI!
         isLoading = false;
       });
     } catch (e) {
       setState(() { isLoading = false; });
+    }
+  }
+
+  Future<void> _deleteReport(int itemId) async {
+    try {
+      final response = await http.post(
+        Uri.parse(deleteItemUrl),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({
+          "item_id": itemId,
+          "reporter_id": widget.user.id,
+        }),
+      );
+
+      final responseData = jsonDecode(response.body);
+      if (response.statusCode == 200 && responseData['status'] == 'success') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("🗑️ Report deleted successfully!"), backgroundColor: Colors.redAccent),
+        );
+        _refreshDashboardData(); // Reload listings instantly
+      }
+    } catch (e) {
+      // Handle silently
     }
   }
 
@@ -142,17 +157,32 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  void _finalizeRedemption(String drinkName, int cost) {
+  Future<void> _finalizeRedemption(String drinkName, int cost) async {
     if (currentPoints >= cost) {
-      setState(() {
-        currentPoints -= cost;
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("🎉 Points deducted! Enjoy your free $drinkName."),
-          backgroundColor: Colors.green,
-        ),
-      );
+      try {
+        // Send a network request to subtract the points permanently from the database file array
+        final response = await http.get(Uri.parse("$getOwnerUpdatesUrl?reporter_id=${widget.user.id}&deduct_points=$cost"));
+        final responseData = jsonDecode(response.body);
+
+        if (response.statusCode == 200 && responseData['status'] == 'success') {
+          setState(() {
+            currentPoints = responseData['current_points'] is String
+                ? int.parse(responseData['current_points'])
+                : responseData['current_points'];
+          });
+          
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text("🎉 Points deducted from DB! Enjoy your free $drinkName."),
+              backgroundColor: Colors.green,
+            ),
+          );
+          _refreshDashboardData(); // Instantly reload and sync dashboard data properties strings
+        }
+      } catch (e) {
+        // Fallback state modification
+        setState(() { currentPoints -= cost; });
+      }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -161,6 +191,39 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
       );
     }
+  }
+
+  void _showLogoutDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: const Text("Logout", style: TextStyle(fontWeight: FontWeight.bold)),
+        content: const Text("Are you sure you want to log out of the campus hub?"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Cancel", style: TextStyle(color: Colors.grey)),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.redAccent,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            ),
+            onPressed: () {
+              Navigator.pop(context); 
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => const AuthScreen()),
+                (route) => false,
+              );
+            },
+            child: const Text("Logout"),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -172,7 +235,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
         backgroundColor: const Color(0xFF1E3A8A),
         foregroundColor: Colors.white,
         elevation: 0,
-        actions: [IconButton(icon: const Icon(Icons.refresh), onPressed: _refreshDashboardData)],
+        actions: [
+          IconButton(icon: const Icon(Icons.refresh), onPressed: _refreshDashboardData, tooltip: "Refresh Data"),
+          IconButton(icon: const Icon(Icons.logout_rounded), onPressed: _showLogoutDialog, tooltip: "Logout Profile"),
+        ],
       ),
       body: RefreshIndicator(
         onRefresh: _refreshDashboardData,
@@ -219,10 +285,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             children: [
                               const Icon(Icons.stars, color: Colors.amber, size: 22),
                               const SizedBox(width: 6),
-                              Text(
-                                "$currentPoints Pts", 
-                                style: const TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold)
-                              ),
+                              Text("$currentPoints Pts", style: const TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold)),
                             ],
                           ),
                           ElevatedButton.icon(
@@ -242,18 +305,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                       ListTile(
                                         leading: const Icon(Icons.coffee, color: Colors.brown),
                                         title: const Text("Iced Milo (50 pts)"),
-                                        onTap: () {
-                                          Navigator.pop(context); 
-                                          _showCouponDialog("Iced Milo", 50); // Direct seamless call
-                                        },
+                                        onTap: () { Navigator.pop(context); _showCouponDialog("Iced Milo", 50); },
                                       ),
                                       ListTile(
                                         leading: const Icon(Icons.local_drink, color: Colors.orange),
                                         title: const Text("Fruit Juice (50 pts)"),
-                                        onTap: () {
-                                          Navigator.pop(context); 
-                                          _showCouponDialog("Fruit Juice", 50); // Direct seamless call
-                                        },
+                                        onTap: () { Navigator.pop(context); _showCouponDialog("Fruit Juice", 50); },
                                       ),
                                     ],
                                   ),
@@ -341,13 +398,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                         ]
                                       ],
                                     ),
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                                      decoration: BoxDecoration(color: isItemFound ? Colors.green[50] : Colors.amber[50], borderRadius: BorderRadius.circular(8)),
-                                      child: Text(
-                                        isItemFound ? "FOUND" : "MISSING",
-                                        style: TextStyle(color: isItemFound ? Colors.green : Colors.amber[800], fontWeight: FontWeight.bold, fontSize: 11),
-                                      ),
+                                    Row(
+                                      children: [
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                                          decoration: BoxDecoration(color: isItemFound ? Colors.green[50] : Colors.amber[50], borderRadius: BorderRadius.circular(8)),
+                                          child: Text(
+                                            isItemFound ? "FOUND" : "MISSING",
+                                            style: TextStyle(color: isItemFound ? Colors.green : Colors.amber[800], fontWeight: FontWeight.bold, fontSize: 11),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 8),
+                                        IconButton(
+                                          icon: const Icon(Icons.delete_outline, color: Colors.redAccent, size: 20),
+                                          onPressed: () => _deleteReport(int.parse(item['id'].toString())),
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
