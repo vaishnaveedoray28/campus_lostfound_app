@@ -23,7 +23,7 @@ class _AuthScreenState extends State<AuthScreen> {
   final TextEditingController _passwordController = TextEditingController();
   
   String _selectedRole = "Student";
-  String _selectedInasis = "Inasis MAS"; // Default layout drop context selection
+  String _selectedInasis = "Inasis MAS"; 
 
   final List<String> _inasisOptions = [
     "Inasis MAS", "Inasis Bank Rakyat", "Inasis Proton", "Inasis Tradewinds", 

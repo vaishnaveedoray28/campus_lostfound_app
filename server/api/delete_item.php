@@ -23,7 +23,7 @@ if (empty($item_id) || empty($reporter_id)) {
 }
 
 try {
-    // Crucial: Extra check ensures users can only delete their own reports
+
     $query = "DELETE FROM items WHERE id = ? AND reporter_id = ?";
     $stmt = $db->prepare($query);
     $stmt->execute([$item_id, $reporter_id]);

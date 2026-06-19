@@ -33,7 +33,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Future<void> _refreshDashboardData() async {
     setState(() { isLoading = true; });
     try {
-      // Fetch updated list of items and fresh points from the database in one single background action
+      
       final response = await http.get(Uri.parse("$getOwnerUpdatesUrl?reporter_id=${widget.user.id}"));
       final responseData = jsonDecode(response.body);
 
@@ -43,7 +43,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       if (response.statusCode == 200 && responseData['status'] == 'success') {
         fetchedReports = responseData['updates'] ?? [];
         
-        // Safely extract the fresh points parsed from the users table by your updated PHP script
+       
         if (responseData['current_points'] != null) {
           updatedPoints = responseData['current_points'] is String
               ? int.parse(responseData['current_points'])
@@ -53,8 +53,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
       setState(() {
         myReports = fetchedReports;
-        currentPoints = updatedPoints; // Instantly updates your point counter card on the screen UI!
-        isLoading = false;
+        currentPoints = updatedPoints; 
       });
     } catch (e) {
       setState(() { isLoading = false; });
@@ -77,10 +76,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("🗑️ Report deleted successfully!"), backgroundColor: Colors.redAccent),
         );
-        _refreshDashboardData(); // Reload listings instantly
+        _refreshDashboardData(); 
       }
     } catch (e) {
-      // Handle silently
+    
     }
   }
 
@@ -90,7 +89,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return List.generate(6, (index) => chars[random.nextInt(chars.length)]).join();
   }
 
-  // FORCE COUPON SCREEN: This will ALWAYS open up perfectly when called
   void _showCouponDialog(String drinkName, int cost) {
     final String claimCode = _generateCouponCode();
 
@@ -160,7 +158,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Future<void> _finalizeRedemption(String drinkName, int cost) async {
     if (currentPoints >= cost) {
       try {
-        // Send a network request to subtract the points permanently from the database file array
+        
         final response = await http.get(Uri.parse("$getOwnerUpdatesUrl?reporter_id=${widget.user.id}&deduct_points=$cost"));
         final responseData = jsonDecode(response.body);
 
@@ -177,10 +175,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
               backgroundColor: Colors.green,
             ),
           );
-          _refreshDashboardData(); // Instantly reload and sync dashboard data properties strings
+          _refreshDashboardData(); 
         }
       } catch (e) {
-        // Fallback state modification
+
         setState(() { currentPoints -= cost; });
       }
     } else {

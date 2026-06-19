@@ -70,12 +70,12 @@ class _FoundFeedScreenState extends State<FoundFeedScreen> {
                   body: jsonEncode({
                     "item_id": item['id'],
                     "finder_id": widget.user.id,
-                    "finder_phone": widget.user.phone, // Automatically pulls from registration
+                    "finder_phone": widget.user.phone, 
                   }),
                 );
                 if (mounted) {
                   Navigator.pop(context);
-                  _fetchLostItems(); // Instantly refresh layout feed
+                  _fetchLostItems(); 
                 }
               } catch (e) {
                 if (mounted) Navigator.pop(context);

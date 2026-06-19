@@ -6,7 +6,6 @@ header("Access-Control-Allow-Methods: GET");
 require_once "db.php";
 
 try {
-    // This query requests only the clean, existing text attributes from your table layout
     $query = "SELECT 
                 i.id, 
                 i.item_name, 
