@@ -14,38 +14,38 @@ require_once "db.php";
 $rawData = file_get_contents("php://input");
 $data = json_decode($rawData, true);
 
-$item_id      = isset($data['item_id']) ? intval($data['item_id']) : 0;
-$finder_id    = isset($data['finder_id']) ? intval($data['finder_id']) : 0;
-$finder_phone = isset($data['finder_phone']) ? trim($data['finder_phone']) : '';
+$item_id      = $data['item_id'] ?? 0;
+$finder_id    = $data['finder_id'] ?? 0;
+$finder_phone = trim($data['finder_phone'] ?? '');
 
-if ($item_id === 0 || $finder_id === 0 || empty($finder_phone)) {
-    echo json_encode(["status" => "error", "message" => "Item ID, Finder ID, and contact details are required."]);
+if (empty($item_id) || empty($finder_id) || empty($finder_phone)) {
+    echo json_encode(["status" => "error", "message" => "Missing claim transaction parameters."]);
     exit();
 }
 
 try {
     $db->beginTransaction();
 
-    // Updates state and puts phone number safely inside finder_phone
-    $queryItem = "UPDATE items 
-                  SET status = 'Found', 
-                      finder_id = ?, 
-                      finder_phone = ?
-                  WHERE id = ?";
+    // 1. Force the status column to save strictly as 'Found'
+    $queryItem = "UPDATE items SET finder_id = ?, finder_phone = ?, status = 'Found' WHERE id = ?";
     $stmtItem = $db->prepare($queryItem);
     $stmtItem->execute([$finder_id, $finder_phone, $item_id]);
 
-    // Adds 10 points helper balance reward
-    $queryPoints = "UPDATE users 
-                    SET points = points + 10 
-                    WHERE id = ?";
+    // 2. Increment user rewards table balance calculation by +10 points
+    $queryPoints = "UPDATE users SET points = points + 10 WHERE id = ?";
     $stmtPoints = $db->prepare($queryPoints);
     $stmtPoints->execute([$finder_id]);
 
     $db->commit();
-    echo json_encode(["status" => "success", "message" => "Claim saved! 10 points added to database successfully."]);
+    echo json_encode([
+        "status" => "success",
+        "message" => "Claim logged successfully! Reward tokens added."
+    ]);
 } catch (PDOException $e) {
-    if ($db->inTransaction()) { $db->rollBack(); }
-    echo json_encode(["status" => "error", "message" => $e->getMessage()]);
+    if ($db->inTransaction()) {
+        $db->rollBack();
+    }
+    http_response_code(500);
+    echo json_encode(["status" => "error", "message" => "Transaction rejected: " . $e->getMessage()]);
 }
 ?>

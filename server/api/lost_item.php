@@ -11,45 +11,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 require_once "db.php";
 
-// Modified to parse $_POST variables since data arrives as MultiPart Form Data now
-$reporter_id = $_POST['reporter_id'] ?? 0;
-$item_name   = trim($_POST['item_name'] ?? '');
-$description = trim($_POST['description'] ?? '');
-$color       = trim($_POST['color'] ?? '');
-$date_lost   = trim($_POST['date_lost'] ?? '');
-$place       = trim($_POST['place'] ?? '');
-$image_path  = ''; 
+$rawData = file_get_contents("php://input");
+$data = json_decode($rawData, true);
+
+$reporter_id = $data['reporter_id'] ?? $data['reporterId'] ?? 0;
+$item_name   = trim($data['item_name'] ?? $data['itemName'] ?? '');
+$description = trim($data['description'] ?? '');
+$color       = trim($data['color'] ?? '');
+$date_lost   = trim($data['date_lost'] ?? $data['dateLost'] ?? '');
+$place       = trim($data['place'] ?? '');
 
 if (empty($reporter_id) || $reporter_id == 0) {
     $reporter_id = 3; 
 }
 
-// Automatically processes incoming binary file blocks from Flutter image_picker
-if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-    $fileTmpPath = $_FILES['image']['tmp_name'];
-    $fileName    = $_FILES['image']['name'];
-    $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-    
-    // Formulate a clean timestamp name structure (e.g., img_1718625900.jpg)
-    $newFileName = 'img_' . time() . '.' . $fileExtension;
-    $uploadFileDir = './uploads/';
-    
-    if (!is_dir($uploadFileDir)) {
-        mkdir($uploadFileDir, 0777, true);
-    }
-    
-    $dest_path = $uploadFileDir . $newFileName;
-    if (move_uploaded_file($fileTmpPath, $dest_path)) {
-        $image_path = "uploads/" . $newFileName; 
-    }
-}
-
 try {
-    $query = "INSERT INTO items (reporter_id, item_name, description, color, date_lost, place, image_path, status) 
-              VALUES (?, ?, ?, ?, ?, ?, ?, 'Missing')";
+    // Removed image_path injection fields entirely
+    $query = "INSERT INTO items (reporter_id, item_name, description, color, date_lost, place, status) 
+              VALUES (?, ?, ?, ?, ?, ?, 'Missing')";
     
     $stmt = $db->prepare($query);
-    $stmt->execute([$reporter_id, $item_name, $description, $color, $date_lost, $place, $image_path]);
+    $stmt->execute([$reporter_id, $item_name, $description, $color, $date_lost, $place]);
 
     echo json_encode([
         "status" => "success", 

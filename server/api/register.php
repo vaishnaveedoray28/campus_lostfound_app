@@ -1,46 +1,51 @@
 <?php
 header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Headers: Content-Type");
-header("Content-Type: application/json");
-date_default_timezone_set('Asia/Kuala_Lumpur');
+header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+header("Access-Control-Allow-Methods: POST, OPTIONS");
+header("Content-Type: application/json; charset=UTF-8");
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
 
 require_once "db.php";
 
-$data = json_decode(file_get_contents("php://input"), true);
+$rawData = file_get_contents("php://input");
+$data = json_decode($rawData, true);
 
-if (
-    empty($data["name"]) || empty($data["email"]) || empty($data["matric_no"]) ||
-    empty($data["inasis"]) || empty($data["phone"]) || empty($data["password"])
-) {
-    echo json_encode(["status" => "error", "message" => "All fields are required"]);
-    exit;
+$name      = trim($data['name'] ?? '');
+$email     = trim($data['email'] ?? '');
+$matric_no = trim($data['matric_no'] ?? '');
+$inasis    = trim($data['inasis'] ?? '');
+$phone     = trim($data['phone'] ?? '');
+$raw_password = trim($data['password'] ?? '');
+
+if (empty($name) || empty($email) || empty($raw_password)) {
+    echo json_encode(["status" => "error", "message" => "Required fields missing."]);
+    exit();
 }
 
-$name = trim($data["name"]);
-$email = trim($data["email"]);
-$matric_no = trim($data["matric_no"]);
-$inasis = trim($data["inasis"]);
-$phone = trim($data["phone"]);
-$password = $data["password"];
-//$role = trim($data["role"]);
-
-$hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-$createdAt = date('Y-m-d H:i:s');
+// SECURE BCRYPT HASHING: This scrambles the text into a secure hash string automatically
+$hashed_password = password_hash($raw_password, PASSWORD_BCRYPT);
 
 try {
-    $db->beginTransaction();
+    // Inserts the secure hashed string instead of the raw text password
+    $query = "INSERT INTO users (name, email, matric_no, inasis, phone, password, points) 
+              VALUES (?, ?, ?, ?, ?, ?, 0)";
+    
+    $stmt = $db->prepare($query);
+    $stmt->execute([$name, $email, $matric_no, $inasis, $phone, $hashed_password]);
 
-    $insert = $db->prepare("
-        INSERT INTO users (name, email, matric_no, inasis, phone, password, created_at, is_verified, points)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, 0)
-    ");
-
-    $insert->execute([$name, $email, $matric_no, $inasis, $phone, $hashedPassword, $createdAt]);
-    $db->commit();
-
-    echo json_encode(["status" => "success", "message" => "Account created successfully!"]);
-} catch (Throwable $e) {
-    if ($db->inTransaction()) { $db->rollBack(); }
-    echo json_encode(["status" => "error", "message" => $e->getMessage()]);
+    echo json_encode([
+        "status" => "success",
+        "message" => "User registered successfully!"
+    ]);
+} catch (PDOException $e) {
+    http_response_code(500);
+    echo json_encode([
+        "status" => "error",
+        "message" => "Registration failed: " . $e->getMessage()
+    ]);
 }
 ?>

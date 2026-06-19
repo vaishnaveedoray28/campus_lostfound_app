@@ -1,19 +1,17 @@
 <?php
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+header("Access-Control-Allow-Methods: POST, GET");
+header("Content-Type: application/json; charset=UTF-8");
 
-$db_file = __DIR__ . '/campus_rewards.db';
+// Establish handle mapping path link directly targeting your SQLite DB file
+$db_path = "C:/xampp/htdocs/lost_found_api/campus_rewards.db";
 
 try {
-    $db = new PDO("sqlite:" . $db_file);
+    $db = new PDO("sqlite:" . $db_path);
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-    $db->exec("PRAGMA foreign_keys = ON;");
 } catch (PDOException $e) {
-    header('Content-Type: application/json; charset=UTF-8');
-    http_response_code(500);
-    echo json_encode([
-        "status" => "error",
-        "message" => "SQLite connection failed: " . $e->getMessage()
-    ]);
+    echo json_encode(["status" => "error", "message" => "Database connection failed: " . $e->getMessage()]);
     exit();
 }
 ?>
