@@ -6,6 +6,7 @@ import '../models/user_model.dart';
 import 'auth_screen.dart'; 
 import 'lost_form_screen.dart';
 import 'found_feed_screen.dart';
+import 'profile_screen.dart'; // Ensure this import matches your filename
 
 class DashboardScreen extends StatefulWidget {
   final UserModel user;
@@ -33,7 +34,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Future<void> _refreshDashboardData() async {
     setState(() { isLoading = true; });
     try {
-      
       final response = await http.get(Uri.parse("$getOwnerUpdatesUrl?reporter_id=${widget.user.id}"));
       final responseData = jsonDecode(response.body);
 
@@ -43,7 +43,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
       if (response.statusCode == 200 && responseData['status'] == 'success') {
         fetchedReports = responseData['updates'] ?? [];
         
-       
         if (responseData['current_points'] != null) {
           updatedPoints = responseData['current_points'] is String
               ? int.parse(responseData['current_points'])
@@ -54,6 +53,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       setState(() {
         myReports = fetchedReports;
         currentPoints = updatedPoints; 
+        isLoading = false;
       });
     } catch (e) {
       setState(() { isLoading = false; });
@@ -158,7 +158,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Future<void> _finalizeRedemption(String drinkName, int cost) async {
     if (currentPoints >= cost) {
       try {
-        
         final response = await http.get(Uri.parse("$getOwnerUpdatesUrl?reporter_id=${widget.user.id}&deduct_points=$cost"));
         final responseData = jsonDecode(response.body);
 
@@ -178,7 +177,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
           _refreshDashboardData(); 
         }
       } catch (e) {
-
         setState(() { currentPoints -= cost; });
       }
     } else {
@@ -259,19 +257,34 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   child: Column(
                     children: [
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          CircleAvatar(
-                            radius: 28, 
-                            backgroundColor: Colors.white.withOpacity(0.2), 
-                            child: const Icon(Icons.person, color: Colors.white, size: 30)
-                          ),
-                          const SizedBox(width: 16),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          Row(
                             children: [
-                              Text("Welcome back, 👋", style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 13)),
-                              Text(widget.user.name, style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+                              CircleAvatar(
+                                radius: 28, 
+                                backgroundColor: Colors.white.withOpacity(0.2), 
+                                child: const Icon(Icons.person, color: Colors.white, size: 30)
+                              ),
+                              const SizedBox(width: 16),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("Welcome back, 👋", style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 13)),
+                                  Text(widget.user.name, style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+                                ],
+                              ),
                             ],
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.arrow_forward_ios_rounded, color: Colors.white, size: 20),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => ProfileScreen(user: widget.user)),
+                              );
+                            },
+                            tooltip: "View Full Profile",
                           ),
                         ],
                       ),
@@ -385,16 +398,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(item['item_name'] ?? 'Item', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                                        Text("Location: ${item['place'] ?? 'N/A'}", style: const TextStyle(color: Colors.black54, fontSize: 12)),
-                                        if (isItemFound && item['finder_name'] != null) ...[
-                                          const SizedBox(height: 6),
-                                          Text("Found by: ${item['finder_name']} (📞 ${item['finder_phone'] ?? 'N/A'})", style: const TextStyle(color: Color(0xFF1E3A8A), fontWeight: FontWeight.bold, fontSize: 12)),
-                                        ]
-                                      ],
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(item['item_name'] ?? 'Item', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                                          Text("Location: ${item['place'] ?? 'N/A'}", style: const TextStyle(color: Colors.black54, fontSize: 12)),
+                                          if (isItemFound && item['finder_name'] != null) ...[
+                                            const SizedBox(height: 6),
+                                            Text("Found by: ${item['finder_name']} (📞 ${item['finder_phone'] ?? 'N/A'})", style: const TextStyle(color: Color(0xFF1E3A8A), fontWeight: FontWeight.bold, fontSize: 12)),
+                                          ]
+                                        ],
+                                      ),
                                     ),
                                     Row(
                                       children: [
