@@ -13,6 +13,7 @@ class MyApp extends StatelessWidget {
 Widget build(BuildContext context) {
   return MaterialApp( 
     title: 'UUM Lost & Found Rewards',
+    debugShowCheckedModeBanner: false,
     theme: ThemeData(
       colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
       useMaterial3: true,
