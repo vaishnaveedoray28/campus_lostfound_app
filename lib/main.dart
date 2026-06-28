@@ -9,18 +9,15 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return NavigatorPopHandler(
-      onPopWithResult: (result) {},
-      child: MaterialApp(
-        title: 'UUM Lost & Found Rewards',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
-          useMaterial3: true,
-        ),
-        home: const SplashScreen(),
-      ),
-    );
-  }
+  @override
+Widget build(BuildContext context) {
+  return MaterialApp( 
+    title: 'UUM Lost & Found Rewards',
+    theme: ThemeData(
+      colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
+      useMaterial3: true,
+    ),
+    home: const SplashScreen(),
+  );
+}
 }

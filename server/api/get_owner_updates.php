@@ -5,12 +5,11 @@ header("Access-Control-Allow-Methods: GET, POST");
 
 require_once "db.php";
 
-// Handle both standard GET requests and point deduction updates
 $reporter_id = $_GET['reporter_id'] ?? 0;
 $deduct_points = (int)($_GET['deduct_points'] ?? 0);
 
 if (empty($reporter_id)) {
-    // Check POST data if GET is empty (fallback for flexibility)
+
     $rawData = file_get_contents("php://input");
     $data = json_decode($rawData, true);
     $reporter_id = $data['reporter_id'] ?? 0;
@@ -23,14 +22,12 @@ if (empty($reporter_id)) {
 }
 
 try {
-    // 1. If a deduction request comes in, subtract the points permanently in SQLite
     if ($deduct_points > 0) {
         $updatePointsQuery = "UPDATE users SET points = MAX(0, points - ?) WHERE id = ?";
         $updatePointsStmt = $db->prepare($updatePointsQuery);
         $updatePointsStmt->execute([$deduct_points, $reporter_id]);
     }
 
-    // 2. Fetch all items you reported and grab the finder's details
     $query = "SELECT 
                 i.id, 
                 i.item_name, 
@@ -47,7 +44,6 @@ try {
     $stmt->execute([$reporter_id]);
     $updates = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // 3. Fetch the fresh, updated points directly from the users table
     $pointsQuery = "SELECT points FROM users WHERE id = ? LIMIT 1";
     $pointsStmt = $db->prepare($pointsQuery);
     $pointsStmt->execute([$reporter_id]);

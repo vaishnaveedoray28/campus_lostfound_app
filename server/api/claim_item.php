@@ -26,12 +26,10 @@ if (empty($item_id) || empty($finder_id) || empty($finder_phone)) {
 try {
     $db->beginTransaction();
 
-    // 1. Force the status column to save strictly as 'Found'
     $queryItem = "UPDATE items SET finder_id = ?, finder_phone = ?, status = 'Found' WHERE id = ?";
     $stmtItem = $db->prepare($queryItem);
     $stmtItem->execute([$finder_id, $finder_phone, $item_id]);
 
-    // 2. Increment user rewards table balance calculation by +10 points
     $queryPoints = "UPDATE users SET points = points + 10 WHERE id = ?";
     $stmtPoints = $db->prepare($queryPoints);
     $stmtPoints->execute([$finder_id]);

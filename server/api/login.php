@@ -23,7 +23,6 @@ if (empty($email) || empty($password)) {
 }
 
 try {
-    // Removed role from select targets list query execution mapping parameters
     $query = "SELECT id, name, email, matric_no, inasis, phone, password, points FROM users WHERE email = ? LIMIT 1";
     $stmt = $db->prepare($query);
     $stmt->execute([$email]);
@@ -31,7 +30,7 @@ try {
 
     if ($user) {
         if (password_verify($password, $user['password'])) {
-            unset($user['password']); // Securely remove the hash before sending to Flutter
+            unset($user['password']); 
             echo json_encode([
                 "status" => "success",
                 "message" => "Login successful!",

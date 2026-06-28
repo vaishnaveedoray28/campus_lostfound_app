@@ -20,9 +20,9 @@ class ProfileScreen extends StatelessWidget {
         child: Column(
           children: [
             const SizedBox(height: 16),
-            // User Avatar Banner Matrix
             CircleAvatar(
               radius: 50,
+              // ignore: deprecated_member_use
               backgroundColor: const Color(0xFF1E3A8A).withOpacity(0.1),
               child: const Icon(Icons.account_circle, size: 100, color: Color(0xFF1E3A8A)),
             ),
@@ -37,7 +37,6 @@ class ProfileScreen extends StatelessWidget {
             ),
             const SizedBox(height: 32),
             
-            // Student Info Table Grid Card
             Card(
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
               elevation: 2,

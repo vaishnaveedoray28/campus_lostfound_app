@@ -26,11 +26,9 @@ if (empty($name) || empty($email) || empty($raw_password)) {
     exit();
 }
 
-// SECURE BCRYPT HASHING: This scrambles the text into a secure hash string automatically
 $hashed_password = password_hash($raw_password, PASSWORD_BCRYPT);
 
 try {
-    // Inserts the secure hashed string instead of the raw text password
     $query = "INSERT INTO users (name, email, matric_no, inasis, phone, password, points) 
               VALUES (?, ?, ?, ?, ?, ?, 0)";
     

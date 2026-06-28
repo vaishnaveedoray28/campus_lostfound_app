@@ -26,7 +26,6 @@ if (empty($reporter_id) || $reporter_id == 0) {
 }
 
 try {
-    // Removed image_path injection fields entirely
     $query = "INSERT INTO items (reporter_id, item_name, description, color, date_lost, place, status) 
               VALUES (?, ?, ?, ?, ?, ?, 'Missing')";
     

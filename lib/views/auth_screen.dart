@@ -91,7 +91,7 @@ class _AuthScreenState extends State<AuthScreen> {
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24.0),
           child: Card(
-            elevation: 6,
+            elevation: 6, //shadow
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
             child: Padding(
               padding: const EdgeInsets.all(24.0),

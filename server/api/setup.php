@@ -1,14 +1,11 @@
 <?php
-// C:\xampp\htdocs\lost_found_api\setup.php
 header("Content-Type: application/json; charset=UTF-8");
 require_once "db.php";
 
 try {
-    // Drop existing tables to establish the perfect schema structure
     $db->exec("DROP TABLE IF EXISTS items");
     $db->exec("DROP TABLE IF EXISTS users");
 
-    // 1. Create Users Table - Removed role and is_verified columns
     $db->exec("CREATE TABLE users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
@@ -22,7 +19,6 @@ try {
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )");
 
-    // 2. Create Items Table - Removed image_path column and set default status to 'Missing'
     $db->exec("CREATE TABLE items (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         reporter_id INTEGER NOT NULL,
@@ -39,11 +35,9 @@ try {
         FOREIGN KEY (finder_id) REFERENCES users(id)
     )");
 
-    // Securely hash passwords so password_verify() in your login.php works perfectly!
     $hashedPassword = password_hash("password123", PASSWORD_DEFAULT);
     $createdAt = date('Y-m-d H:i:s');
 
-    // 3. Insert testing seed accounts matching the simplified schema
     $stmt = $db->prepare("INSERT INTO users (name, email, password, matric_no, inasis, phone, points, created_at) VALUES (?, ?, ?, ?, ?, ?, 0, ?)");
     
     $stmt->execute(['Ali Bin Ahmad', 'ali_uum@student.uum.edu.my', $hashedPassword, '291111', 'Inasis MAS', '012-3456789', $createdAt]);

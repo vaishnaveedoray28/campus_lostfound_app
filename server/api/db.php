@@ -4,7 +4,6 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 header("Access-Control-Allow-Methods: POST, GET");
 header("Content-Type: application/json; charset=UTF-8");
 
-// Establish handle mapping path link directly targeting your SQLite DB file
 $db_path = "C:/xampp/htdocs/lost_found_api/campus_rewards.db";
 
 try {

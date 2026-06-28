@@ -6,7 +6,7 @@ import '../models/user_model.dart';
 import 'auth_screen.dart'; 
 import 'lost_form_screen.dart';
 import 'found_feed_screen.dart';
-import 'profile_screen.dart'; // Ensure this import matches your filename
+import 'profile_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   final UserModel user;
